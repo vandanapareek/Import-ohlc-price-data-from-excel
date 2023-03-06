@@ -23,3 +23,5 @@ func CreateError(code int, message string) CSVError {
 
 var Success = CSVError{Code: 200, Message: "success"}
 var InvalidCSVError = CSVError{Code: 401, Message: "The CSV file is invalid."}
+var FileOpenCSVError = CSVError{Code: 401, Message: "Unable to open csv file."}
+var InvalidCSVHeaderError = CSVError{Code: 401, Message: "Invalid file headers, expecting as [UNIX,SYMBOL,OPEN,HIGH,LOW,CLOSE]."}

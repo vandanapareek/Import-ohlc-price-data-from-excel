@@ -4,9 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"go-price-data/database"
-	"go-price-data/dto"
 	"go-price-data/errors"
 	"io"
+	"net/http"
 	"strconv"
 	"sync"
 )
@@ -14,21 +14,29 @@ import (
 var err error
 
 type ICsvService interface {
-	ProcessCSV(fcsv *csv.Reader) error
+	ProcessCSV(req *http.Request) (int, error)
 }
 
 type CsvStruct struct {
 }
 
-func (csvStruct CsvStruct) ProcessCSV(fcsv *csv.Reader) error {
+func (csvStruct CsvStruct) ProcessCSV(req *http.Request) (int, error) {
 
-	rs := make([]*dto.CsvHeaderPriceData, 0)
+	csvPartFile, _, _ := req.FormFile("file")
+
+	//close the file at the end
+	defer csvPartFile.Close()
+
+	fcsv := csv.NewReader(csvPartFile)
+	fcsv.Read()
+
+	rs := make([]*database.PriceData, 0)
 	numWps := 100
 	jobs := make(chan []string, numWps)
-	res := make(chan *dto.CsvHeaderPriceData)
+	res := make(chan *database.PriceData)
 
 	var wg sync.WaitGroup
-	worker := func(jobs <-chan []string, results chan<- *dto.CsvHeaderPriceData) {
+	worker := func(jobs <-chan []string, results chan<- *database.PriceData) {
 		for {
 			select {
 			case job, ok := <-jobs: // you must check for readable state of the channel.
@@ -36,16 +44,10 @@ func (csvStruct CsvStruct) ProcessCSV(fcsv *csv.Reader) error {
 				if !ok {
 					return
 				}
-				//results <- parseStruct(job)
-				parseStruct(job)
+				results <- parseStruct(job)
 			}
 		}
 	}
-
-	database.Db.SetMaxOpenConns(numWps)
-	database.Db.SetMaxIdleConns(numWps)
-
-	defer database.Db.Close()
 
 	if err != nil {
 		fmt.Print(err)
@@ -97,19 +99,19 @@ func (csvStruct CsvStruct) ProcessCSV(fcsv *csv.Reader) error {
 	fmt.Println("Count Concu ", len(rs))
 
 	if len(rs) == 0 {
-		return errors.InvalidCSVError
+		return 0, errors.InvalidCSVError
 	}
-	return nil
+	return len(rs), nil
 }
 
-func parseStruct(data []string) {
+func parseStruct(data []string) *database.PriceData {
 	unix, _ := strconv.ParseInt(data[0], 10, 64)
 	open, _ := strconv.ParseFloat(data[2], 64)
 	hign, _ := strconv.ParseFloat(data[3], 64)
 	low, _ := strconv.ParseFloat(data[4], 64)
 	close, _ := strconv.ParseFloat(data[5], 64)
 
-	pd := database.PriceData{
+	pd := &database.PriceData{
 		Unix:       unix,
 		Symbol:     data[1],
 		OpenPrice:  open,
@@ -119,4 +121,5 @@ func parseStruct(data []string) {
 	}
 	fmt.Println(pd)
 	database.Instance.Create(&pd)
+	return pd
 }
