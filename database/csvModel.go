@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"go-price-data/dto"
 	"go-price-data/errors"
 	"strings"
@@ -27,11 +26,8 @@ func SearchDetails(filter dto.Filter) ([]PriceData, error) {
 	err := Instance.Find(&pd).Select("symbol,unix,open_price,close_price,high_price,low_price").Where(strings.Join(fields, " AND "), values...).Offset((filter.Page - 1) * filter.Count).Limit(filter.Count).Order(filter.SortBy + " " + filter.Order).Scan(&res).Error
 
 	if err != nil {
-		fmt.Println("I am failed")
-
 		return res, errors.DatabaseConnectionError
 	}
-	fmt.Println("I am successfull")
 	return res, nil
 }
 

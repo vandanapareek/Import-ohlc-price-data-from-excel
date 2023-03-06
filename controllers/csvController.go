@@ -29,7 +29,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 	} else {
 		//CSV processed successfully
 		var resp Response
-		resp.Msg = "CSV successfully uploaded. Processed row count:" + strconv.Itoa(processedRows)
+		resp.Msg = "CSV successfully uploaded. Total processed rows:" + strconv.Itoa(processedRows)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)

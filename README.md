@@ -31,3 +31,54 @@ docker compose build
 # Open your browser at http://localhost:8080 to access the app
 docker compose up
 ```
+
+## REST API example
+
+### Upload CSV API
+
+```http
+POST /read-csv
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `file` | `file` | **Required**. |
+
+
+### Response
+
+```javascript
+{
+    "msg": "CSV successfully uploaded. Total processed rows:5"
+}
+```
+
+
+### Search and Pagination API
+
+```http
+GET /search?page=1&count=100&symbol=BTCUSDT&open_price=gt:4212&close_price=lteq:42124
+```
+
+### Response
+
+```javascript
+[
+    {
+        "unix": 1644719640000,
+        "symbol": "BTCUSDT",
+        "open": 42113.08,
+        "high": 42126.32,
+        "low": 42113.07,
+        "close": 42123.3
+    },
+    {
+        "unix": 1644719640000,
+        "symbol": "BTCUSDT",
+        "open": 42113.08,
+        "high": 42126.32,
+        "low": 42113.07,
+        "close": 42123.3
+    }
+]
+```
