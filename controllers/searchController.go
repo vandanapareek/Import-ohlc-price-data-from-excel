@@ -40,3 +40,13 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func HomePage(w http.ResponseWriter, req *http.Request) {
+	var resp Response
+	resp.Code = 200
+	resp.Msg = "homepage"
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(resp)
+	return
+}

@@ -3,9 +3,7 @@ package controllers
 import (
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
 	"go-price-data/consts"
-	"go-price-data/database"
 	"go-price-data/errors"
 	"go-price-data/services/dataProcess"
 	"net/http"
@@ -50,36 +48,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func parseStruct(data []string) *database.PriceData {
-	unix, _ := strconv.ParseInt(data[0], 10, 64)
-	open, _ := strconv.ParseFloat(data[2], 64)
-	hign, _ := strconv.ParseFloat(data[3], 64)
-	low, _ := strconv.ParseFloat(data[4], 64)
-	close, _ := strconv.ParseFloat(data[5], 64)
-
-	pd := &database.PriceData{
-		Unix:       unix,
-		Symbol:     data[1],
-		OpenPrice:  open,
-		HighPrice:  hign,
-		LowPrice:   low,
-		ClosePrice: close,
-	}
-	fmt.Println(pd)
-	database.Instance.Create(&pd)
-	return pd
-}
-
-func HomePage(w http.ResponseWriter, req *http.Request) {
-	var resp Response
-	resp.Code = 200
-	resp.Msg = "homepage"
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(resp)
-	return
-}
-
+//validate CSV file and its header
 func processParams(req *http.Request) error {
 	csvPartFile, header, openErr := req.FormFile("file")
 	if openErr != nil {
