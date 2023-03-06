@@ -25,7 +25,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 		resp.Code = 422
 		resp.Msg = err.Error()
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
@@ -35,7 +35,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 		resp.Code = 422
 		resp.Msg = err.Error()
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(resp)
 		return
 	} else {
@@ -43,88 +43,10 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 		resp.Code = 200
 		resp.Msg = "CSV successfully uploaded. Processed row count:" + strconv.Itoa(processedRows) //add currupted row count too
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
-	// rs := make([]*database.PriceData, 0)
-	// numWps := 100
-	// jobs := make(chan []string, numWps)
-	// res := make(chan *database.PriceData)
-
-	// var wg sync.WaitGroup
-	// worker := func(jobs <-chan []string, results chan<- *database.PriceData) {
-	// 	for {
-	// 		select {
-	// 		case job, ok := <-jobs: // you must check for readable state of the channel.
-
-	// 			if !ok {
-	// 				return
-	// 			}
-	// 			results <- parseStruct(job)
-	// 			//parseStruct(job)
-	// 		}
-	// 	}
-	// }
-
-	// // init workers
-	// //it is runnung 100 times even if small csv file
-	// for w := 0; w < numWps; w++ {
-
-	// 	wg.Add(1)
-	// 	go func() {
-	// 		// this line will exec when chan `res` processed output at line 107 (func worker: line 71)
-	// 		defer wg.Done()
-	// 		worker(jobs, res)
-	// 	}()
-
-	// }
-
-	// go func() {
-	// 	lineNum := 0
-	// 	for {
-	// 		lineNum++
-	// 		column, err := fcsv.Read()
-
-	// 		if err == io.EOF {
-	// 			break
-	// 		}
-	// 		if err != nil {
-	// 			fmt.Println("ERROR: ", err.Error())
-	// 			break
-	// 		}
-	// 		jobs <- column
-	// 	}
-	// 	close(jobs) // close jobs to signal workers that no more job are incoming.
-	// }()
-
-	// go func() {
-	// 	wg.Wait()
-	// 	close(res) // when you close(res) it breaks the below loop.
-	// }()
-
-	// for r := range res {
-	// 	rs = append(rs, r)
-	// }
-	// fmt.Println("Count Concu ", len(rs))
-
-	// if len(rs) == 0 {
-	// 	var resp ResponseFailure
-	// 	resp.Code = 422
-	// 	resp.Msg = "No data processed. Either the CSV file is invalid or empty!"
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	json.NewEncoder(w).Encode(resp)
-	// 	return
-	// } else {
-	// 	var resp ResponseFailure
-	// 	resp.Code = 200
-	// 	resp.Msg = "CSV successfully uploaded. Processed row count:" + strconv.Itoa(len(rs)) //add currupted row count
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	json.NewEncoder(w).Encode(resp)
-	// 	return
-	// }
 
 }
 
@@ -162,24 +84,9 @@ func processParams(req *http.Request) error {
 	csvPartFile, header, openErr := req.FormFile("file")
 	if openErr != nil {
 		return errors.FileOpenCSVError
-		// fmt.Println("File openErr error222", openErr)
-		// var resp ResponseFailure
-		// resp.Code = 422
-		// resp.Msg = "Please upload a valid file"
-		// w.Header().Set("Content-Type", "application/json")
-		// w.WriteHeader(http.StatusBadRequest)
-		// json.NewEncoder(w).Encode(resp)
-		// return
 	}
 	if filepath.Ext(header.Filename) != ".csv" {
 		return errors.InvalidCSVError
-		// var resp ResponseFailure
-		// resp.Code = 422
-		// resp.Msg = "Invalid file"
-		// w.Header().Set("Content-Type", "application/json")
-		// w.WriteHeader(http.StatusBadRequest)
-		// json.NewEncoder(w).Encode(resp)
-		// return
 	}
 
 	//close the file at the end
@@ -190,13 +97,6 @@ func processParams(req *http.Request) error {
 
 	if len(column) != 6 || consts.CSVHeaderCol1 != column[0] || consts.CSVHeaderCol2 != column[1] || consts.CSVHeaderCol3 != column[2] || consts.CSVHeaderCol4 != column[3] || consts.CSVHeaderCol5 != column[4] || consts.CSVHeaderCol6 != column[5] {
 		return errors.InvalidCSVHeaderError
-		// var resp ResponseFailure
-		// resp.Code = 422
-		// resp.Msg = "Invalid file headers, expecting as [UNIX,SYMBOL,OPEN,HIGH,LOW,CLOSE]"
-		// w.Header().Set("Content-Type", "application/json")
-		// w.WriteHeader(http.StatusBadRequest)
-		// json.NewEncoder(w).Encode(resp)
-		// return
 	}
 	return nil
 }
