@@ -15,11 +15,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 	//validate csv
 	err := processParams(req)
 	if err != nil {
-		var resp Response
-		resp.Msg = err.Error()
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(resp)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -28,11 +24,7 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		//CSV have some errors
-		var resp Response
-		resp.Msg = err.Error()
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(resp)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	} else {
 		//CSV processed successfully

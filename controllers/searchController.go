@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"go-price-data/dto"
+	"go-price-data/errors"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -11,15 +12,11 @@ import (
 func Search(w http.ResponseWriter, r *http.Request) {
 	//set default filters
 	filterStruct := dto.SetDefault()
-	var resp Response
 
 	//validate api params
 	err := schema.NewDecoder().Decode(&filterStruct, r.URL.Query())
 	if err != nil {
-		resp.Msg = "Error in GET parameters"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(resp)
+		http.Error(w, errors.InvalidParamError.Message, http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -27,17 +24,13 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	details, err := csvService.SearchDetails(filterStruct)
 	if err != nil {
 		//something went wrong while searching
-		resp.Msg = err.Error()
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(resp)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 	if len(details) == 0 || details == nil {
-		resp.Msg = "No record found"
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(resp)
+		json.NewEncoder(w).Encode("No record found")
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")

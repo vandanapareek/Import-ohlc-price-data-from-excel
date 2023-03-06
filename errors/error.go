@@ -26,3 +26,5 @@ var InvalidCSVError = CSVError{Code: 401, Message: "The CSV file is invalid."}
 var FileOpenCSVError = CSVError{Code: 401, Message: "Unable to open csv file."}
 var InvalidCSVHeaderError = CSVError{Code: 401, Message: "Invalid file headers, expecting as [UNIX,SYMBOL,OPEN,HIGH,LOW,CLOSE]."}
 var DatabaseConnectionError = CSVError{Code: 502, Message: "Error establishing a database connection "}
+var InvalidParamError = CSVError{Code: 401, Message: "Invalid Params"}
+var NoRecordFoundError = CSVError{Code: 401, Message: "No record found"}

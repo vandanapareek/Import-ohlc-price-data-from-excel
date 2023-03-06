@@ -24,7 +24,6 @@ type CsvStruct struct {
 
 func (csvStruct CsvStruct) SearchDetails(filterStruct dto.Filter) ([]database.PriceData, error) {
 	res, err := database.SearchDetails(filterStruct)
-	fmt.Printf("hahahhahahahaha %d", len(res))
 	if err != nil {
 		return res, err
 	}
