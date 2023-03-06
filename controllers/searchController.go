@@ -3,14 +3,17 @@ package controllers
 import (
 	"encoding/json"
 	"go-price-data/database"
+	"go-price-data/dto"
 	"net/http"
 
 	"github.com/gorilla/schema"
 )
 
 func Search(w http.ResponseWriter, r *http.Request) {
-	filterStruct := database.SetDefault()
+	//set default filters
+	filterStruct := dto.SetDefault()
 
+	//check
 	err := schema.NewDecoder().Decode(&filterStruct, r.URL.Query())
 	if err != nil {
 		var resp Response
@@ -22,7 +25,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var pd database.PriceData
-	res := database.GetAllDetails(&pd, &filterStruct)
+	res := database.GetAllDetails(&pd, filterStruct)
 	if res == nil {
 		var resp Response
 		resp.Code = 422

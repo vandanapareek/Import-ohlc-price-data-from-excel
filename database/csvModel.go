@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	"go-price-data/dto"
 	"log"
 	"strings"
 )
@@ -19,32 +19,9 @@ func (pd *PriceData) TableName() string {
 	return "price_data"
 }
 
-type Filter struct {
-	Page   int    `schema:"page"`
-	Count  int    `schema:"count"`
-	SortBy string `schema:"sortby"`
-	Order  string `schema:"order"`
-	//Price specific filters
-	Symbol     string `schema:"symbol"`
-	HighPrice  string `schema:"high_price"`
-	LowPrice   string `schema:"low_price"`
-	OpenPrice  string `schema:"open_price"`
-	ClosePrice string `schema:"close_price"`
-}
-
-func SetDefault() Filter {
-	return Filter{
-		Page:   1,
-		Count:  10,
-		SortBy: "symbol",
-		Order:  "asc",
-	}
-}
-
-func GetAllDetails(pd *PriceData, filter *Filter) []PriceData {
-	fmt.Println(filter)
+func GetAllDetails(pd *PriceData, filter dto.Filter) []PriceData {
 	var res []PriceData
-	fields, values := generateQuery(*filter)
+	fields, values := generateQuery(filter)
 	err := Instance.Find(&pd).Select("symbol,unix,open_price,close_price,high_price,low_price").Where(strings.Join(fields, " AND "), values...).Offset((filter.Page - 1) * filter.Count).Limit(filter.Count).Order(filter.SortBy + " " + filter.Order).Scan(&res).Error
 
 	if err != nil {
@@ -73,7 +50,7 @@ func getSign(signStr string) string {
 	}
 }
 
-func generateQuery(filter Filter) ([]string, []interface{}) {
+func generateQuery(filter dto.Filter) ([]string, []interface{}) {
 
 	fields := []string{}
 	values := []interface{}{}

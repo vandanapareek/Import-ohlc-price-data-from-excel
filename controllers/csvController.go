@@ -5,18 +5,19 @@ import (
 	"encoding/json"
 	"go-price-data/consts"
 	"go-price-data/errors"
-	"go-price-data/services/dataProcess"
+	csvservice "go-price-data/services/csvService"
 	"net/http"
 	"path/filepath"
 	"strconv"
 )
 
 var (
-	dataProcessService dataProcess.ICsvService = dataProcess.ICsvService(dataProcess.CsvStruct{})
+	csvService csvservice.ICsvService = csvservice.ICsvService(csvservice.CsvStruct{})
 )
 
 func ReadCsv(w http.ResponseWriter, req *http.Request) {
 
+	//validate csv
 	err := processParams(req)
 	if err != nil {
 		var resp Response
@@ -27,8 +28,12 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
-	processedRows, err := dataProcessService.ProcessCSV(req)
+
+	//process CSV data
+	processedRows, err := csvService.ProcessCSV(req)
+
 	if err != nil {
+		//CSV have some errors
 		var resp Response
 		resp.Code = 422
 		resp.Msg = err.Error()
@@ -37,9 +42,10 @@ func ReadCsv(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(resp)
 		return
 	} else {
+		//CSV processed successfully
 		var resp Response
 		resp.Code = 200
-		resp.Msg = "CSV successfully uploaded. Processed row count:" + strconv.Itoa(processedRows) //add currupted row count too
+		resp.Msg = "CSV successfully uploaded. Processed row count:" + strconv.Itoa(processedRows)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
@@ -58,9 +64,10 @@ func processParams(req *http.Request) error {
 		return errors.InvalidCSVError
 	}
 
-	//close the file at the end
+	//close the file
 	defer csvPartFile.Close()
 
+	//validate csv header
 	fcsv := csv.NewReader(csvPartFile)
 	column, _ := fcsv.Read()
 
