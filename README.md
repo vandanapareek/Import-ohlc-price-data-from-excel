@@ -34,7 +34,7 @@ docker compose up
 
 ## REST API example
 
-### Upload CSV API
+### 1.Upload CSV API
 
 ```http
 POST /read-csv
@@ -54,7 +54,7 @@ POST /read-csv
 ```
 
 
-### Search and Pagination API
+### 2.Search and Pagination API
 
 ```http
 GET /search?page=1&count=100&symbol=BTCUSDT&open_price=gt:4212&close_price=lteq:42124
