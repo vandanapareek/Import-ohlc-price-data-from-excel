@@ -1,24 +1,3 @@
-CREATE TABLE `users`
-(
-    id   bigint auto_increment,
-    name varchar(255) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
-INSERT INTO `users` (`name`)
-VALUES ('Solomon'),
-       ('Menelik');
-
-CREATE TABLE `users1`
-(
-    id   bigint auto_increment,
-    region varchar(255) NOT NULL,
-    country varchar(255) NOT NULL,
-    order_id varchar(255) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
-
 CREATE TABLE `price_data`
 (
     id bigint(20) unsigned  auto_increment,
