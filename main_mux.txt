@@ -1,0 +1,44 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/Solomon04/go-docker-tutorial/controllers"
+	"github.com/Solomon04/go-docker-tutorial/database"
+
+	"github.com/gorilla/mux"
+)
+
+func main() {
+
+	// Load Configurations from config.json using Viper
+	//LoadAppConfig()
+
+	// Initialize Database
+
+	database.Connect("tester:secret@tcp(127.0.0.1:3306)/test")
+
+	// Init the mux router
+	router := mux.NewRouter()
+
+	// Route handles & endpoints
+
+	// Get all movies
+	router.HandleFunc("/movies/", controllers.GetUsers).Methods("GET")
+	router.HandleFunc("/", controllers.HomePage).Methods("GET")
+
+	// // Create a movie
+	// router.HandleFunc("/movies/", CreateMovie).Methods("POST")
+
+	// // Delete a specific movie by the movieID
+	// router.HandleFunc("/movies/{movieid}", DeleteMovie).Methods("DELETE")
+
+	// // Delete all movies
+	// router.HandleFunc("/movies/", DeleteMovies).Methods("DELETE")
+
+	// serve the app
+	fmt.Println("Server at 8080")
+	log.Fatal(http.ListenAndServe(":8080", router))
+}
