@@ -16,7 +16,7 @@ git clone https://github.com/vandanapareek/ohlc-price-data.git
 
 3. Change to the directory for the project.
 ```bash
-cd OHLC-Price-Data
+cd ohlc-price-data
 ```
 
 4. Build or rebuild the services
