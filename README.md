@@ -67,18 +67,18 @@ GET /search?page=1&count=100&symbol=BTCUSDT&open_price=gt:4212&close_price=lteq:
     {
         "unix": 1644719640000,
         "symbol": "BTCUSDT",
-        "open": 42113.08,
-        "high": 42126.32,
-        "low": 42113.07,
-        "close": 42123.3
+        "open": 42113.08000000,
+        "high": 42126.32000000,
+        "low": 42113.07000000,
+        "close": 42123.07000000
     },
     {
         "unix": 1644719640000,
         "symbol": "BTCUSDT",
-        "open": 42113.08,
-        "high": 42126.32,
-        "low": 42113.07,
-        "close": 42123.3
+        "open": 42113.47000000,
+        "high": 42126.22000000,
+        "low": 42113.06000000,
+        "close": 42123.47000000
     }
 ]
 ```
