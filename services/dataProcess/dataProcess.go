@@ -3,9 +3,9 @@ package dataProcess
 import (
 	"encoding/csv"
 	"fmt"
-	"go-docker-tutorial/database"
-	"go-docker-tutorial/dto"
-	"go-docker-tutorial/errors"
+	"go-price-data/database"
+	"go-price-data/dto"
+	"go-price-data/errors"
 	"io"
 	"strconv"
 	"sync"

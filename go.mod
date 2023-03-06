@@ -1,4 +1,4 @@
-module go-docker-tutorial
+module go-price-data
 
 go 1.16
 

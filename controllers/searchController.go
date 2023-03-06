@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"go-docker-tutorial/database"
+	"go-price-data/database"
 	"log"
 	"net/http"
 

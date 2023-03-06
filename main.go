@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"go-docker-tutorial/controllers"
-	"go-docker-tutorial/database"
+	"go-price-data/controllers"
+	"go-price-data/database"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,7 +15,7 @@ func main() {
 
 	//https://github.com/icodestuff-io/golang-docker-tutorial
 
-	database.Connect("tester:secret@tcp(test_db)/test")
+	database.Connect("tester:secret@tcp(test_db_new)/test")
 
 	http.HandleFunc("/", controllers.HomePage)
 	http.HandleFunc("/search", controllers.Search)

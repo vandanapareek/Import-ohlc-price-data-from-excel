@@ -1,4 +1,0 @@
-{
-    "connection_string": "tester:secret@tcp(db:3306)/test",
-    "port": 8080
-}
