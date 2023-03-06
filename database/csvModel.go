@@ -1,8 +1,9 @@
 package database
 
 import (
+	"fmt"
 	"go-price-data/dto"
-	"log"
+	"go-price-data/errors"
 	"strings"
 )
 
@@ -19,16 +20,19 @@ func (pd *PriceData) TableName() string {
 	return "price_data"
 }
 
-func GetAllDetails(pd *PriceData, filter dto.Filter) []PriceData {
+func SearchDetails(filter dto.Filter) ([]PriceData, error) {
+	var pd *PriceData
 	var res []PriceData
 	fields, values := generateQuery(filter)
 	err := Instance.Find(&pd).Select("symbol,unix,open_price,close_price,high_price,low_price").Where(strings.Join(fields, " AND "), values...).Offset((filter.Page - 1) * filter.Count).Limit(filter.Count).Order(filter.SortBy + " " + filter.Order).Scan(&res).Error
 
 	if err != nil {
-		log.Fatal(err)
-		panic("Cannot connect to DB")
+		fmt.Println("I am failed")
+
+		return res, errors.DatabaseConnectionError
 	}
-	return res
+	fmt.Println("I am successfull")
+	return res, nil
 }
 
 func getSign(signStr string) string {
