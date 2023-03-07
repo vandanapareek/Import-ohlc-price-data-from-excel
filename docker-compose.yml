@@ -34,6 +34,11 @@ services:
       dockerfile: api.Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      DB_USER: tester
+      DB_PASSWORD: secret
+      DB_NAME: test
+      DB_HOST: test_db_new
     # we are depending on the mysql backend
     depends_on:
       - db

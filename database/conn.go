@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +13,8 @@ var err error
 var Instance *gorm.DB
 
 func Connect() {
-	Instance, err = gorm.Open(mysql.Open("tester:secret@tcp(test_db_new)/test"), &gorm.Config{
+
+	Instance, err = gorm.Open(mysql.Open(os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+")/"+os.Getenv("DB_NAME")), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
