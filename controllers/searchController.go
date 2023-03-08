@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"go-price-data/database"
 	"go-price-data/dto"
 	"go-price-data/errors"
 	"net/http"
@@ -10,6 +11,8 @@ import (
 )
 
 func Search(w http.ResponseWriter, r *http.Request) {
+	database.ConnectToGorm()
+
 	//set default filters
 	filterStruct := dto.SetDefault()
 

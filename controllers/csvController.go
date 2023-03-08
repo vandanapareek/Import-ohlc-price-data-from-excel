@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"go-price-data/consts"
+	"go-price-data/database"
 	"go-price-data/errors"
 	"net/http"
 	"path/filepath"
@@ -11,6 +12,7 @@ import (
 )
 
 func ReadCsv(w http.ResponseWriter, req *http.Request) {
+	database.ConnectToGorm()
 
 	//validate csv
 	err := processParams(req)
